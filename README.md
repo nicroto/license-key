@@ -5,7 +5,7 @@ License-key generator for NodeJS.
 ## Getting Started
 Install license-key with:
 ```bash
-$ npm install license-key --save
+$ npm install license-key
 ```
 
 ## Description
