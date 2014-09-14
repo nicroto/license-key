@@ -32,7 +32,7 @@ Once you create an instance of the generator the default way of generating a key
 var signThis = "Nikolay Tsenkov";
 lgen.generateLicense( {
 	signThis: signThis
-}, function(license) {
+}, function(error, license) {
 	// ...
 } );
 ```
@@ -63,7 +63,7 @@ var signThis = "Nikolay Tsenkov",
 lgen.generateLicense( {
 	signThis: signThis,
 	template: template
-}, function(license) {
+}, function(error, license) {
 	// ...
 } );
 ```
@@ -108,7 +108,7 @@ lgen.generateLicense( {
 		licenseMeta: licenseMeta,
 		appMeta: appMeta
 	}
-}, function(license) {
+}, function(error, license) {
 	// ...
 } );
 ```
@@ -164,7 +164,7 @@ lgen.generateLicense( {
 			return resultLines.join( "\n" );
 		}
 	}
-}, function(license) {
+}, function(error, license) {
 	// ...
 } );
 ```
