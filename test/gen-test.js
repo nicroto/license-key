@@ -91,24 +91,24 @@ describe( "license-key", function() {
 			serial = "xxxxxxxxxxxxxxxx"; // 16 symbols
 		// mock serial creation for predictability
 		lgen._generateSerial = function(signThis, callback) {
-			callback( serial );
+			callback( null, serial );
 		};
-		it( "should throw an error if signThis is not a valid string (at least 1 character)", function() {
-			should( function() {
-				lgen.generateLicense( {} );
-			} ).throw();
-			should( function() {
-				lgen.generateLicense( { signThis: null } );
-			} ).throw();
-			should( function() {
-				lgen.generateLicense( { signThis: 1 } );
-			} ).throw();
-			should( function() {
-				lgen.generateLicense( { signThis: {} } );
-			} ).throw();
-			should( function() {
-				lgen.generateLicense( { signThis: "" } );
-			} ).throw();
+		it( "should return an error if signThis is not a valid string (at least 1 character)", function() {
+			lgen.generateLicense( {}, function(error) {
+				should.exist( error );
+			} );
+			lgen.generateLicense( { signThis: null }, function(error) {
+				should.exist( error );
+			} );
+			lgen.generateLicense( { signThis: 1 }, function(error) {
+				should.exist( error );
+			} );
+			lgen.generateLicense( { signThis: {} }, function(error) {
+				should.exist( error );
+			} );
+			lgen.generateLicense( { signThis: "" }, function(error) {
+				should.exist( error );
+			} );
 		} );
 		it( "should throw an error if no callback is passed", function() {
 			should( function() {
@@ -121,44 +121,45 @@ describe( "license-key", function() {
 				lgen.generateLicense( { signThis: "data to sign" }, {} );
 			} ).throw();
 		} );
-		it( "shouldn't throw an error if no model is passed", function() {
-			should( function() {
-				lgen.generateLicense( { signThis: "data to sign" }, function() {} );
-			} ).not.throw();
-			should( function() {
-				lgen.generateLicense( {
-					signThis: "data to sign",
-					model: {}
-				}, function() {} );
-			} ).not.throw();
+		it( "shouldn't return an error if no model is passed", function() {
+			lgen.generateLicense( { signThis: "data to sign" }, function(error) {
+				should.not.exist( error );
+			} );
+			lgen.generateLicense( {
+				signThis: "data to sign",
+				model: {}
+			}, function(error) {
+				should.not.exist( error );
+			} );
 		} );
-		it( "should throw an error if model is passed but not an object", function() {
-			should( function() {
-				lgen.generateLicense( {
-					signThis: "data to sign",
-					model: 1
-				} );
-			} ).throw();
+		it( "should return an error if model is passed but not an object", function() {
+			lgen.generateLicense( {
+				signThis: "data to sign",
+				model: 1
+			}, function(error) {
+				should.exist( error );
+			} );
 		} );
-		it( "should throw an error if template is passed but isn't a string", function() {
-			should( function() {
-				lgen.generateLicense( {
-					signThis: "data to sign",
-					template: 1
-				} );
-			} ).throw();
-			should( function() {
-				lgen.generateLicense( {
-					signThis: "data to sign",
-					template: {}
-				} );
-			} ).throw();
+		it( "should return an error if template is passed but isn't a string", function() {
+			lgen.generateLicense( {
+				signThis: "data to sign",
+				template: 1
+			}, function(error) {
+				should.exist( error );
+			} );
+			lgen.generateLicense( {
+				signThis: "data to sign",
+				template: {}
+			}, function(error) {
+				should.exist( error );
+			} );
 		} );
 		it( "generates a license key with the default tempalte", function(done) {
 			var signThis = "Nikolay Tsenkov";
 			lgen.generateLicense( {
 				signThis: signThis
-			}, function(license) {
+			}, function(error, license) {
+				should.not.exist( error );
 				license.should.equal( Mustache.render( defaultTemplate, {
 					name: signThis,
 					serial: serial
@@ -174,7 +175,8 @@ describe( "license-key", function() {
 				model: {
 					name: name
 				}
-			}, function(license) {
+			}, function(error, license) {
+				should.not.exist( error );
 				license.should.equal( Mustache.render( defaultTemplate, {
 					name: name,
 					serial: serial
@@ -193,7 +195,8 @@ describe( "license-key", function() {
 			lgen.generateLicense( {
 				signThis: signThis,
 				template: template
-			}, function(license) {
+			}, function(error, license) {
+				should.not.exist( error );
 				license.should.equal( Mustache.render( template, {
 					name: signThis,
 					serial: serial
@@ -201,31 +204,31 @@ describe( "license-key", function() {
 				done();
 			} );
 		} );
-		it( "should throw an error if model.serialFormat is passed, but it's not a function", function() {
-			should( function() {
-				lgen.generateLicense( {
-					signThis: "data to sign",
-					model: {
-						serialFormat: {}
-					}
-				} );
-			} ).throw();
-			should( function() {
-				lgen.generateLicense( {
-					signThis: "data to sign",
-					model: {
-						serialFormat: 1
-					}
-				} );
-			} ).throw();
-			should( function() {
-				lgen.generateLicense( {
-					signThis: "data to sign",
-					model: {
-						serialFormat: ""
-					}
-				} );
-			} ).throw();
+		it( "should return an error if model.serialFormat is passed, but it's not a function", function() {
+			lgen.generateLicense( {
+				signThis: "data to sign",
+				model: {
+					serialFormat: {}
+				}
+			}, function(error) {
+				should.exist( error );
+			} );
+			lgen.generateLicense( {
+				signThis: "data to sign",
+				model: {
+					serialFormat: 1
+				}
+			}, function(error) {
+				should.exist( error );
+			} );
+			lgen.generateLicense( {
+				signThis: "data to sign",
+				model: {
+					serialFormat: ""
+				}
+			}, function(error) {
+				should.exist( error );
+			} );
 		} );
 		it( "uses serialFormat function for serial if provided in the model", function(done) {
 			var signThis = "Nikolay Tsenkov",
@@ -237,7 +240,8 @@ describe( "license-key", function() {
 						return formattedSerial;
 					}
 				}
-			}, function(license) {
+			}, function(error, license) {
+				should.not.exist( error );
 				license.should.equal( Mustache.render( defaultTemplate, {
 					name: signThis,
 					serial: formattedSerial
@@ -283,7 +287,8 @@ describe( "license-key", function() {
 						return resultLines.join( "\n" );
 					}
 				}
-			}, function(license) {
+			}, function(error, license) {
+				should.not.exist( error );
 				license.should.equal( Mustache.render( template, {
 					name: name,
 					email: email,

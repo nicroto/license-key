@@ -64,23 +64,27 @@ Generator.prototype = {
 			serialFormat = model.serialFormat;
 
 		// checks
-		if ( !signThis || typeof signThis !== "string" ) {
-			throw new Error( "Invalid data to be signed!" );
-		}
-		if ( model && typeof model !== "object" ) {
-			throw new Error( "Model should be an object!" );
-		}
-		if ( serialFormat !== undefined && typeof serialFormat !== "function" ) {
-			throw new Error( "model.serialFormat should be a function!" );
-		}
-		if ( template && typeof template !== "string" ) {
-			throw new Error( "Template should be a string!" );
-		}
 		if ( !callback ) {
 			throw new Error( "No callback is assigned!" );
 		}
 		if ( typeof callback !== "function" ) {
 			throw new Error( "No callback is assigned!" );
+		}
+		if ( !signThis || typeof signThis !== "string" ) {
+			callback( new Error( "Invalid data to be signed!" ) );
+			return;
+		}
+		if ( model && typeof model !== "object" ) {
+			callback( new Error( "Model should be an object!" ) );
+			return;
+		}
+		if ( serialFormat !== undefined && typeof serialFormat !== "function" ) {
+			callback( new Error( "model.serialFormat should be a function!" ) );
+			return;
+		}
+		if ( template && typeof template !== "string" ) {
+			callback( new Error( "Template should be a string!" ) );
+			return;
 		}
 
 		// clean model from non-data props
@@ -94,32 +98,47 @@ Generator.prototype = {
 			model.name = ( model.name !== undefined ) ? model.name : signThis;
 		}
 
-		self._checkOpenssl( function() {
-			self._generateSerial( signThis, function(serial) {
+		self._checkOpenssl( function(error) {
+			if ( error ) {
+				callback( error );
+				return;
+			}
+
+			self._generateSerial( signThis, function(error, serial) {
+				if ( error ) {
+					callback( error );
+					return;
+				}
+
 				model.serial = serialFormat ? serialFormat( serial ) : serial;
-				callback( Mustache.render( template, model ) );
+				callback( null, Mustache.render( template, model ) );
 			} );
 		} );
 	},
 
 	_checkOpenssl: function(callback) {
 		var self = this;
-		var throwError = function() {
-			throw new Error( "Openssl version isn't supported! Should be >= 1.0.1" );
+		var fail = function() {
+			callback( new Error( "Openssl version isn't supported! Should be >= 1.0.1" ) );
+			return;
 		};
 
 		if ( !self.isOpensslChecked ) {
 			exec( self.opensslPath + " version", function(error, stdout, stderror) {
+				if ( error ) {
+					callback( error );
+					return;
+				}
 				self.isOpensslChecked = true;
 				self.isOpensslVersionSupported = self._isOpensslVersionSupported( stdout );
 				if ( self.isOpensslVersionSupported ) {
 					callback();
 				} else {
-					throwError();
+					fail();
 				}
 			} );
 		} else if ( !self.isOpensslVersionSupported ) {
-			throwError();
+			fail();
 		} else if ( self.isOpensslVersionSupported ) {
 			callback();
 		}
@@ -147,7 +166,12 @@ Generator.prototype = {
 			signScriptPath, opensslPath, privateKeyPath, JSON.stringify( signThis )
 		].join(" ");
 		exec( command, function(error, stdout, stderror) {
-			callback( stdout.replace( /(\n|\s|\=)/g, "" ) );
+			if ( error ) {
+				callback( error );
+				return;
+			}
+
+			callback( null, stdout.replace( /(\n|\s|\=)/g, "" ) );
 		} );
 	}
 
