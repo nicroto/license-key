@@ -185,6 +185,14 @@ xxxx xxxx xxxx xxxx
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+ - 0.2.0
+ 	- Improve: lgen.generateLicense to be able to return errors on callback
+
+```javascript 	
+lgen.generateLicense( data, function(error, license) {...} );
+```
+
+ 	- Improve: add grunt-release for easier release on npm.
  - 0.1.0
 
 ## License
