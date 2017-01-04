@@ -2,7 +2,7 @@
  * license-key
  * https://github.com/nicroto/license-key
  *
- * Copyright (c) 2014 Nikolay Tsenkov
+ * Copyright (c) 2017 Nikolay Tsenkov
  * Licensed under the MIT license.
  */
 
