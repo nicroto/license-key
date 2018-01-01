@@ -196,5 +196,5 @@ lgen.generateLicense( data, function(error, license) {...} );
  - 0.1.0
 
 ## License
-Copyright (c) 2017 Nikolay Tsenkov  
+Copyright (c) 2014-2018 Nikolay Tsenkov  
 Licensed under the MIT license.
