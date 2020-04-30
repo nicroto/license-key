@@ -15,7 +15,7 @@ NodeJS module for generation of license-keys. This module supports DSA and ECDSA
 The module requires openssl. You can specify a custom path if you want to use a custom build/install, that isn't on the PATH. **Supported are versions starting from 1.0.1**.
 
 ## Init
-The module exports the LicenseGenerator type, which is initialized with the **absolute** path to your private key, and optionally the **absolute** path to a custom build of OpenSSSL (otherwise it will try to use the one on the PATH if any):
+The module exports the LicenseGenerator type, which is initialized with the **absolute** path to your private key, and optionally the **absolute** path to a custom build of OpenSSL (otherwise it will try to use the one on the PATH if any):
 ```javascript
 var pathUtils = require('path'),
 	LicenseGenerator = require('license-key');
@@ -45,7 +45,7 @@ xxxxxxxxxxxxxxxxxxxxx
 =====END LICENSE=====
 ```
 
-Templates are standard mustache tempaltes. If the default tempalte is used, then the model bound the default tempalte has 2 default fields - name and serial.
+Templates are standard mustache templates. If the default template is used, then the model bound the default template has 2 default fields - name and serial.
 
 ## Custom License templates
 You can create your own mustache template (this sounds weird :smile:). If you provide your own template, then the only field in the model data will be automatically added will be the produced serial. You need to specify the serial field in the template, or otherwise will get license with no serial.
