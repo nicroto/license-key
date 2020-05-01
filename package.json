@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "mustache": "~2.2.1",
-    "semver": "~2.2.1"
+    "semver": "~4.3.2"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
